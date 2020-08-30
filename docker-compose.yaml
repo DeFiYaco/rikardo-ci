@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  gitlab:
+      image: 'gitlab/gitlab-ce:latest'
+      restart: always
+      hostname: 'rikardo-gitlab.duckdns.org'
+      environment:
+        GITLAB_OMNIBUS_CONFIG: |
+          external_url 'https://rikardo-gitlab.duckdns.org'
+          nginx['listen_port']=80
+          nginx['lsiten_https']=false
+          gitlab_rails['gitlab_shell_ssh_port'] = 2001
+          # Add any other gitlab.rb configuration here, each on its own line
+      ports:
+        - '2000:80'
+        - '2001:22'
+      volumes:
+        - '$GITLAB_HOME/config:/etc/gitlab'
+        - '$GITLAB_HOME/logs:/var/log/gitlab'
+        - '$GITLAB_HOME/data:/var/opt/gitlab'
+  https-portal:
+    image: steveltn/https-portal:latest
+    ports:
+      - '80:80'
+      - '443:443'
+    environment:
+      DOMAINS: 'rikardo-gitlab.duckdns.org -> http://gitlab:80'
+      # STAGE: 'production' # Don't use production until staging works
