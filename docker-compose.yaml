@@ -7,8 +7,8 @@ services:
       environment:
         GITLAB_OMNIBUS_CONFIG: |
           external_url 'https://rikardo-gitlab.duckdns.org'
-          #nginx['listen_port']=80
-          #nginx['listen_https']=false
+          nginx['listen_port']=80
+          nginx['listen_https']=false
           gitlab_rails['gitlab_shell_ssh_port'] = 2001
           # Add any other gitlab.rb configuration here, each on its own line
       ports:
@@ -20,18 +20,7 @@ services:
         - '$GITLAB_HOME/data:/var/opt/gitlab'
       networks: 
         - internal
-  https-portal:
-    image: steveltn/https-portal:1
-    ports:
-      - '80:80'
-      - '443:443'
-    links:
-      - gitlab
-    environment:
-      DOMAINS: 'rikardo-gitlab.duckdns.org -> http://gitlab:80'
-      # STAGE: 'production' # Don't use production until staging works
-    networks: 
-      - internal
+  
 
 networks: 
   internal:
